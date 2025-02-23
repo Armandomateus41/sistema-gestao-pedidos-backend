@@ -1,9 +1,12 @@
+
+# app/main.py
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.routers import pedidos
 from app.database import engine, Base
 
-# Cria as tabelas no banco de dados
+# Criação das tabelas no banco
 Base.metadata.create_all(bind=engine)
 
 # Inicialização do FastAPI
@@ -13,18 +16,19 @@ app = FastAPI(
     version="1.0.0"
 )
 
-# Configuração do CORS
+# Configuração do CORS para permitir o acesso do frontend
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],  # Permite apenas o frontend local
+    allow_origins=["http://localhost:3000"],  # URL do frontend
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
+# Rota raiz
 @app.get("/")
 def read_root():
     return {"message": "API de Gestão de Pedidos está rodando!"}
 
-# Incluindo as rotas do módulo de pedidos
-app.include_router(pedidos.router, prefix="/api", tags=["Pedidos"])
+# Incluindo as rotas de pedidos
+app.include_router(pedidos.router, prefix="/api")
